@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<!-- leaving the action blank makes the form submit to the same url used
+to display the form -->
+<form action="" method="post">
+	<!-- all django forms need a cross site request forgery token  see-surf -->
+	{% csrf_token %}
+	<table>
+		<!-- we get form for free from our CBV, form object is generated from the model!-->
+		{{ form.as_table }}
+	</table>
+	<input type="submit" value="Submit!" class="btn">
+</form>
+	
+{% endblock content %}
+	

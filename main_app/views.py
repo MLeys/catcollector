@@ -20,8 +20,10 @@ class CatCreate(CreateView):
   fields = '__all__' # two _ this specifies every field on the model (all keys)
 # CONVENTION ALERT!
 # CBV expects a template with the following naming
-# templates/<name of app>/<model name_form.html
+# templates/<name of app>/<model name>_form.html
 # example: templates/main_app/cat_form.html
+
+### REDIRECT is on the model for the POST ^
 
 
 def home(request):
