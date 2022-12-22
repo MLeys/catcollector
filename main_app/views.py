@@ -2,10 +2,24 @@ from django.shortcuts import render
 
 
 # import the cbv
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # Create your views here.
 from django.http import HttpResponse
 from .models import Cat
+
+
+class CatUpdate(UpdateView):
+  model = Cat
+  # disallow the update of the name
+  fields = ['breed', 'description', 'age']
+  # the is redirect happens on the model def get_absolute_url
+
+
+class CatDelete(DeleteView):
+  model = Cat
+  # want to define the success_url, since when we delete something we can't redirect to the detail page
+  success_url = '/cats/' # <- redirects to the cats_index page
+
 
 
 
