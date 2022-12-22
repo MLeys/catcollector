@@ -3,6 +3,17 @@
 
 {% block content %}
 
+<!-- We get a variable called object, which is the instance from the
+database of the model, so in our case it would represent the cat 
+we are trying to Edit if we are on the create version the Object would be None -->
+<!-- object_list -->
+
+{% if object %}
+	<h1>Edit <span class="teal-text">{{ object.name }}</span></h1>
+{% else %}
+	<h1>Add Cat</h1>
+{% endif %}
+	
 <!-- leaving the action blank makes the form submit to the same url used
 to display the form -->
 <form action="" method="post">

@@ -14,6 +14,11 @@ class CatUpdate(UpdateView):
   fields = ['breed', 'description', 'age']
   # the is redirect happens on the model def get_absolute_url
 
+# Template expectation (the same as create it reuses the page!)
+# templates/<name of app>/<model name>_form.html
+# example: templates/main_app/cat_form.html
+
+
 
 class CatDelete(DeleteView):
   model = Cat
