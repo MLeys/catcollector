@@ -14,6 +14,7 @@ from .models import Cat
 # and the get request which renders the form!
 class CatCreate(CreateView):
   model = Cat 
+  
   # specify what fields we want on our form
   # ['name', 'breed', 'description'] <- specify whats keys from the model
   # in a list
