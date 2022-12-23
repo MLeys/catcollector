@@ -6,6 +6,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 # Create your views here.
 from django.http import HttpResponse
 from .models import Cat
+from .forms import FeedingForm
 
 
 class CatUpdate(UpdateView):
@@ -69,6 +70,10 @@ def cats_detail(request, cat_id):
   # use our model Cat (Capital cat) to retrieve whatever row
   # from our db the cat_id matches
   cat = Cat.objects.get(id=cat_id)
+
+  # instiate our form class, to create a form from the class 
+  # feeding_form is the instance of our class, aka a form
+  feeding_form = FeedingForm()
   # cats/detail.html <- refers to a template
   # render responds to the client
-  return render(request, 'cats/detail.html', {'cat': cat})
+  return render(request, 'cats/detail.html', {'cat': cat, 'feeding_form': feeding_form})
