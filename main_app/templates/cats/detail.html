@@ -23,8 +23,8 @@
     </div>
   </div>
   <div class="col s6">
-
-	<form action="" method="POST">
+	<!-- /cats/cat.id/add_feeding -->
+	<form action="{% url 'add_feeding' cat.id %}" method="POST">
 		{% csrf_token %}
 		{{ feeding_form.as_p }}
 		<input type="submit" class="btn" value="Add Feeding">
@@ -52,6 +52,14 @@
 	// select the element, rember django gives us id's on our form
 	const selectEl = document.querySelector('#id_meal');
 	M.FormSelect.init(selectEl);
+
+	const dateEl = document.querySelector('#id_date');
+	M.Datepicker.init(dateEl, {
+		format: 'yyyy-mm-dd',
+		defaultDate: new Date(),
+		setDefaultDate: true,
+		autoClose: true
+	})
 
 </script>
 

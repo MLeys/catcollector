@@ -51,4 +51,7 @@ class Feeding(models.Model):
 		# will return Breakfast, (look at the tuple!)
 		return f"{self.get_meal_display()} on {self.date}"
 
+	class Meta:
+		ordering = ['-date']
+
 

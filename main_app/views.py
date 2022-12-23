@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 # import the cbv
@@ -7,6 +7,30 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.http import HttpResponse
 from .models import Cat
 from .forms import FeedingForm
+
+
+
+def add_feeding(request, cat_id):
+  # create a ModelForm instance using the data from the 
+  # post request (when our form submits from the client to server)
+  # request.POST is the contents of the form, when submitted
+  form = FeedingForm(request.POST)
+  # validate the form
+  if form.is_valid():
+    # save an instance in memoery
+    new_feeding = form.save(commit=False)
+    # new_feeding.cat_id comes from the model key on Feeding called cat
+    # remember the _id is automatically appended to it 
+    new_feeding.cat_id = cat_id
+    new_feeding.save()
+    # we always redirect when we change data in the database
+    # in this case we added a feeding to a cat
+    # cat_id on the left refers to the param in url
+    # cats/<int:cat_id>/' for the details
+    # cat_id on the right is referring to the actually id, we 
+    # reusing the cat_id from form submission that is argument to add_feeding 
+    # function above
+  return redirect('detail', cat_id=cat_id)
 
 
 class CatUpdate(UpdateView):
