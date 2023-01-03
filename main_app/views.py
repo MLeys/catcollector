@@ -3,9 +3,10 @@ from django.shortcuts import render, redirect
 
 # import the cbv
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView
 # Create your views here.
 from django.http import HttpResponse
-from .models import Cat
+from .models import Cat, Toy
 from .forms import FeedingForm
 
 
@@ -101,3 +102,21 @@ def cats_detail(request, cat_id):
   # cats/detail.html <- refers to a template
   # render responds to the client
   return render(request, 'cats/detail.html', {'cat': cat, 'feeding_form': feeding_form})
+
+class ToyList(ListView):
+  model = Toy
+
+class ToyDetail(DetailView):
+  model = Toy
+
+class ToyCreate(CreateView):
+  model = Toy
+  fields = '__all__'
+
+class ToyUpdate(UpdateView):
+  model = Toy
+  fields = ['name', 'color']
+
+class ToyDelete(DeleteView):
+  model = Toy
+  success_url = '/toys/'
