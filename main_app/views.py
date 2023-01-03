@@ -63,7 +63,7 @@ class CatCreate(CreateView):
   # specify what fields we want on our form
   # ['name', 'breed', 'description'] <- specify whats keys from the model
   # in a list
-  fields = '__all__' # two _ this specifies every field on the model (all keys)
+  fields = ['name', 'breed', 'description', 'age'] # two _ this specifies every field on the model (all keys)
 # CONVENTION ALERT!
 # CBV expects a template with the following naming
 # templates/<name of app>/<model name>_form.html
@@ -95,13 +95,27 @@ def cats_detail(request, cat_id):
   # use our model Cat (Capital cat) to retrieve whatever row
   # from our db the cat_id matches
   cat = Cat.objects.get(id=cat_id)
+  toys_cat_doesnt_have = Toy.objects.exclude(id__in = cat.toys.all().values_list('id'))
+
 
   # instiate our form class, to create a form from the class 
   # feeding_form is the instance of our class, aka a form
   feeding_form = FeedingForm()
   # cats/detail.html <- refers to a template
   # render responds to the client
-  return render(request, 'cats/detail.html', {'cat': cat, 'feeding_form': feeding_form})
+  return render(request, 'cats/detail.html', 
+    {
+      'cat': cat, 
+      'feeding_form': feeding_form,
+      'toys': toys_cat_doesnt_have
+    })
+
+
+def assoc_toy(request, cat_id, toy_id):
+  # Note that you can pass a toy's id instead of the whole object
+  Cat.objects.get(id=cat_id).toys.add(toy_id)
+  return redirect('detail', cat_id=cat_id)
+
 
 class ToyList(ListView):
   model = Toy
