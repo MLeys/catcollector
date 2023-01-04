@@ -7,6 +7,7 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
 from django.http import HttpResponse
 from .models import Cat, Toy
@@ -54,7 +55,7 @@ def add_feeding(request, cat_id):
   return redirect('detail', cat_id=cat_id)
 
 
-class CatUpdate(UpdateView):
+class CatUpdate(LoginRequiredMixin, UpdateView):
   model = Cat
   # disallow the update of the name
   fields = ['breed', 'description', 'age']
@@ -66,7 +67,7 @@ class CatUpdate(UpdateView):
 
 
 
-class CatDelete(DeleteView):
+class CatDelete(LoginRequiredMixin, DeleteView):
   model = Cat
   # want to define the success_url, since when we delete something we can't redirect to the detail page
   success_url = '/cats/' # <- redirects to the cats_index page
@@ -147,20 +148,20 @@ def unassoc_toy(request, cat_id, toy_id):
   Cat.objects.get(id=cat_id).toys.remove(toy_id)
   return redirect('detail', cat_id=cat_id)
 
-class ToyList(ListView):
+class ToyList(LoginRequiredMixin, ListView):
   model = Toy
 
-class ToyDetail(DetailView):
+class ToyDetail(LoginRequiredMixin, DetailView):
   model = Toy
 
-class ToyCreate(CreateView):
+class ToyCreate(LoginRequiredMixin, CreateView):
   model = Toy
   fields = '__all__'
 
-class ToyUpdate(UpdateView):
+class ToyUpdate(LoginRequiredMixin, UpdateView):
   model = Toy
   fields = ['name', 'color']
 
-class ToyDelete(DeleteView):
+class ToyDelete(LoginRequiredMixin, DeleteView):
   model = Toy
   success_url = '/toys/'
