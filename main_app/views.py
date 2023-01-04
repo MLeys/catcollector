@@ -4,12 +4,32 @@ from django.shortcuts import render, redirect
 # import the cbv
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 from django.http import HttpResponse
 from .models import Cat, Toy
 from .forms import FeedingForm
 
-
+def signup(request):
+  error_message = ''
+  if request.method == 'POST':
+    # This is how to create a 'user' form object
+    # that includes the data from the browser
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+      # This will add the user to the database
+      user = form.save()
+      # This is how we log a user in via code
+      login(request, user)
+      return redirect('index')
+    else:
+      error_message = 'Invalid sign up - try again'
+  # A bad POST or a GET request, so render signup.html with an empty form
+  form = UserCreationForm()
+  context = {'form': form, 'error_message': error_message}
+  return render(request, 'registration/signup.html', context)
 
 def add_feeding(request, cat_id):
   # create a ModelForm instance using the data from the 
@@ -70,6 +90,11 @@ class CatCreate(CreateView):
 # example: templates/main_app/cat_form.html
 
 ### REDIRECT is on the model for the POST ^
+  def form_valid(self, form):
+      # Assign the logged in user (self.request.user)
+      form.instance.user = self.request.user  # form.instance is the cat
+      # Let the CreateView do its job as usual
+      return super().form_valid(form)
 
 
 def home(request):
@@ -79,18 +104,19 @@ def home(request):
 def about(request):
 	return render(request, 'about.html')
 
-
+@login_required
 def cats_index(request):
 	# the key on the dictionary is the variable name
 	# in the template (index.html)
   #Cat is our model, that can talk to sql and retrieve all the rows in our table
-  cats = Cat.objects.all()
+  cats = Cat.objects.filter(user=request.user)
   return render(request, 'cats/index.html', {'cats': cats})
 
 
 # cat_id is coming from the urls.py, params 
 #path('cats/<int:cat_id>/' <--------
 # they must be the same, Django convention!
+@login_required
 def cats_detail(request, cat_id):
   # use our model Cat (Capital cat) to retrieve whatever row
   # from our db the cat_id matches
@@ -110,12 +136,16 @@ def cats_detail(request, cat_id):
       'toys': toys_cat_doesnt_have
     })
 
-
+@login_required
 def assoc_toy(request, cat_id, toy_id):
   # Note that you can pass a toy's id instead of the whole object
   Cat.objects.get(id=cat_id).toys.add(toy_id)
   return redirect('detail', cat_id=cat_id)
 
+@login_required
+def unassoc_toy(request, cat_id, toy_id):
+  Cat.objects.get(id=cat_id).toys.remove(toy_id)
+  return redirect('detail', cat_id=cat_id)
 
 class ToyList(ListView):
   model = Toy
